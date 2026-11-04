@@ -11,4 +11,7 @@ public class WordleDictionary {
 
     private List<String> words;
 
+    public List<String> getWords() {
+        return words;
+    }
 }
