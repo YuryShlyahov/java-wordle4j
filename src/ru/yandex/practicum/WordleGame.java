@@ -35,20 +35,31 @@ public class WordleGame {
         return dictionary;
     }
 
-    private void play(WordleGame game){
-        String word = game.getDictionary().getWords().get(new Random().nextInt(game.getDictionary().getWords().size()));
+    public void play() {
+        // String word = getDictionary().getWords().get(new Random().nextInt(getDictionary().getWords().size()));
+        String word = "ангел";
         steps = 0;
         Scanner scanner = new Scanner(System.in);
         String message = "AAAAA";
-        while (!word.equals(answer)){
+        StringBuilder sb = new StringBuilder(message);
+        while (!word.equals(answer)) {
+            System.out.println("Число оставшихся попыток: " + (6 - steps));
+            System.out.println("Введите ответ.");
             answer = scanner.nextLine();
             steps++;
             for (int i = 0; i < answer.length(); i++) {
-                if(answer.charAt(i) == word.charAt(i)){
-                    message = message.replace(message.charAt(i), '+');
+                if (word.contains(Character.toString(answer.charAt(i)))) {
+                    sb.setCharAt(i, '^');
                 }
+                if (answer.charAt(i) == word.charAt(i)) {
+                    sb.setCharAt(i, '+');
+
+                }
+                message = sb.toString();
+                System.out.println("виток цикла " + i + " Сообщение " + message);
             }
-            if(steps == 6){
+            System.out.println("Подсказка: " + message);
+            if (steps == 6) {
                 break;
             }
         }
