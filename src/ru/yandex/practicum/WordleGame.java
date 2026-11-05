@@ -1,6 +1,5 @@
 package ru.yandex.practicum;
 
-import java.util.Random;
 import java.util.Scanner;
 
 /*
@@ -17,14 +16,14 @@ import java.util.Scanner;
  */
 public class WordleGame {
 
+    private String playerResponse;
     private String answer;
-
     private int steps;
 
     private WordleDictionary dictionary;
 
-    public String getAnswer() {
-        return answer;
+    public String getPlayerResponse() {
+        return playerResponse;
     }
 
     public int getSteps() {
@@ -37,32 +36,41 @@ public class WordleGame {
 
     public void play() {
         // String word = getDictionary().getWords().get(new Random().nextInt(getDictionary().getWords().size()));
-        String word = "ангел";
+        guessWord();
         steps = 0;
         Scanner scanner = new Scanner(System.in);
-        String message = "AAAAA";
-        StringBuilder sb = new StringBuilder(message);
-        while (!word.equals(answer)) {
+        while (true) {
             System.out.println("Число оставшихся попыток: " + (6 - steps));
             System.out.println("Введите ответ.");
-            answer = scanner.nextLine();
+            playerResponse = scanner.nextLine();
             steps++;
-            for (int i = 0; i < answer.length(); i++) {
-                if (word.contains(Character.toString(answer.charAt(i)))) {
-                    sb.setCharAt(i, '^');
-                }
-                if (answer.charAt(i) == word.charAt(i)) {
-                    sb.setCharAt(i, '+');
-
-                }
-                message = sb.toString();
-                System.out.println("виток цикла " + i + " Сообщение " + message);
-            }
-            System.out.println("Подсказка: " + message);
-            if (steps == 6) {
+            if (answer.equals(playerResponse)) {
+                System.out.println("Поздравляем, вы победили!");
+                break;
+            } else if (steps == 6) {
+                System.out.println("Количество ходов исчерпано, вы проиграли");
                 break;
             }
+            System.out.println("Подсказка: " + makeHint());
         }
+    }
 
+    private String makeHint() {
+        StringBuilder sb = new StringBuilder();
+        String hint = "";
+        for (int i = 0; i < playerResponse.length(); i++) {
+            if (!answer.contains(Character.toString(playerResponse.charAt(i)))) {
+                sb.append('-');
+            } else if (playerResponse.charAt(i) == answer.charAt(i)) {
+                sb.append('+');
+            } else {
+                sb.append('^');
+            }
+            hint = sb.toString();
+        }
+        return hint;
+    }
+    public void guessWord() {
+        answer = "ангел";
     }
 }
