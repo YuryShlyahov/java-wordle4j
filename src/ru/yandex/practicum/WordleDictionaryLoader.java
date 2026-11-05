@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
 этот класс содержит в себе всю рутину по работе с файлами словарей и с кодировками
@@ -12,21 +14,20 @@ import java.io.IOException;
  */
 public class WordleDictionaryLoader {
     public WordleDictionary load() {
-        WordleDictionary wordleDictionary = new WordleDictionary();
+        List<String> words = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader("words_ru.txt"))) {
             while (br.ready()) {
                 String line = br.readLine();
                 if (checkWord(line)) {
-                    System.out.println(line);
+                    words.add(editWord(line));
                 }
-
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return wordleDictionary;
+        return new WordleDictionary(words);
     }
 
     private boolean checkWord(String word) {
@@ -38,6 +39,6 @@ public class WordleDictionaryLoader {
     }
 
     private String editWord(String word) {
-        return "";
+        return word.toLowerCase().replace('ё', 'е');
     }
 }

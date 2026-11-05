@@ -12,10 +12,8 @@ package ru.yandex.practicum;
 public class Wordle {
 
     public static void main(String[] args) {
-    WordleDictionaryLoader wordleDictionaryLoader = new WordleDictionaryLoader();
-    wordleDictionaryLoader.load();
-        WordleGame wordleGame = new WordleGame();
-    wordleGame.play();
+        WordleGame wordleGame = new WordleGame(new WordleDictionaryLoader().load());
+        wordleGame.play();
     }
 
 }
