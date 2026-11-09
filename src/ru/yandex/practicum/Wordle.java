@@ -1,5 +1,7 @@
 package ru.yandex.practicum;
 
+import java.io.IOException;
+
 /*
 в главном классе нам нужно:
     создать лог-файл (он должен передаваться во все классы)
@@ -11,7 +13,7 @@ package ru.yandex.practicum;
  */
 public class Wordle {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         WordleGame wordleGame = new WordleGame(new WordleDictionaryLoader().load());
         wordleGame.play();
     }

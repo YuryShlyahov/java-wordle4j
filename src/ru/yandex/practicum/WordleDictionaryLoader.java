@@ -1,9 +1,9 @@
 package ru.yandex.practicum;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,32 +13,17 @@ import java.util.List;
     на выходе должен быть класс WordleDictionary
  */
 public class WordleDictionaryLoader {
-    public WordleDictionary load() {
+    public WordleDictionary load() throws IOException {
         List<String> words = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("words_ru.txt"))) {
-            while (br.ready()) {
-                String line = br.readLine();
-                if (checkWord(line)) {
-                    words.add(editWord(line));
-                }
+        try (BufferedReader br = new BufferedReader(new FileReader("words_ru.txt", StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                words.add(line);
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
         return new WordleDictionary(words);
     }
-
-    private boolean checkWord(String word) {
-        if (word.length() == 5) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private String editWord(String word) {
-        return word.toLowerCase().replace('ё', 'е');
-    }
 }
+
+
