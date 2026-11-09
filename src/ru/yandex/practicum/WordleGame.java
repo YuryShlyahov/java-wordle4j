@@ -1,7 +1,6 @@
 package ru.yandex.practicum;
 
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 /*
 в этом классе хранится словарь и состояние игры
@@ -22,11 +21,14 @@ public class WordleGame {
     private String answer;
     private int steps;
     private String tip;
-
+    private Set<Character> wrongLetters;
+    private Map<Character, Integer> correctLetters;
     private WordleDictionary dictionary;
 
     public WordleGame(WordleDictionary dictionary) {
         this.dictionary = dictionary;
+        wrongLetters = new HashSet<>();
+        correctLetters = new HashMap<>();
     }
 
     public String getPlayerResponse() {
@@ -43,16 +45,21 @@ public class WordleGame {
 
     public void play() {
         System.out.println("Добро пожаловать в игру WORDLE");
-        guessWord();
+        answer = findRandomWord();
         steps = 1;
         Scanner scanner = new Scanner(System.in);
         while (true) {
-
+            String hint;
             System.out.println("Введите ответ.");
             playerResponse = scanner.nextLine().toLowerCase();
-            if (playerResponse.isEmpty() && tip != null){
-                System.out.println("Подсказка: " + makeHint() );
-            } else if (playerResponse.length() != 5) {
+            if (playerResponse.isEmpty()) {
+                hint = makeHint();
+                System.out.println("Подсказка: " + hint);
+                playerResponse = hint;
+                continue;
+            }
+
+            if (playerResponse.length() != 5) {
                 System.out.println("Введен некорректный вариант ответа, в ответе должно быть 5 букв.");
                 continue;
             } else if (!checkResponse(playerResponse)) {
@@ -85,38 +92,61 @@ public class WordleGame {
         return true;
     }
 
-    public String makeHint(){
-        String hint = "";
-        for (String word : dictionary.getWords()){
-            for (int i = 0; i < word.length(); i++) {
-                if(tip.charAt(i) == '+'){
-                    if(word.charAt(i) != playerResponse.charAt(i)){
-                        continue;
-                    } else {
-                        hint = word;
-                    }
-                }
+    public String makeHint() {
+        if (correctLetters.isEmpty()) {
+            return findRandomWord();
+        }
+
+        for (String word : dictionary.getWords()) {
+            if (checkWord(word)) {
+                return word;
             }
         }
-        return hint;
+        return "hint";
     }
+
+    private boolean checkWord(String word) {
+        for (int i = 0; i < word.length(); i++) {
+            if (wrongLetters.contains(word.charAt(i))) {
+                System.out.println("Проверяем слово " + word);
+                System.out.println("Буквы " + word.charAt(i) + " нет в слове");
+                return false;
+            }
+        }
+        for (Map.Entry<Character, Integer> entry : correctLetters.entrySet()) {
+            if (word.indexOf(entry.getKey()) < 0) {
+                return false;
+            } else if (entry.getValue() >= 0 && word.charAt(entry.getValue()) != entry.getKey()) {
+                return false;
+            } else if (entry.getValue() < 0 && word.indexOf(entry.getValue()) == entry.getValue() * -1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     private String makeTip() {
         StringBuilder tip = new StringBuilder();
         for (int i = 0; i < playerResponse.length(); i++) {
             if (!answer.contains(Character.toString(playerResponse.charAt(i)))) {
                 tip.append('-');
-            } else if (playerResponse.charAt(i) == answer.charAt(i)) {
-                tip.append('+');
-            } else {
+                wrongLetters.add(playerResponse.charAt(i));
+            } else if (answer.contains(Character.toString(playerResponse.charAt(i))) &&
+                    playerResponse.charAt(i) != answer.charAt(i)) {
                 tip.append('^');
+                correctLetters.put(playerResponse.charAt(i), i * -1);
+            } else {
+                tip.append('+');
+                correctLetters.put(playerResponse.charAt(i), i);
             }
         }
         return tip.toString();
     }
 
-    public void guessWord() {
-        answer = getDictionary().getWords().get(new Random().nextInt(getDictionary().getWords().size()));
-        System.out.println("Я загадал слово из " + answer.length() + " букв");
+    public String findRandomWord() {
+        String randomWord = getDictionary().getWords().get(new Random().nextInt(getDictionary().getWords().size()));
+        dictionary.getWords().remove(randomWord);
+        return randomWord;
     }
 }
