@@ -17,26 +17,112 @@ import java.util.*;
 
 public class WordleGame {
 
-    private String playerResponse;
-    private String answer;
-    private int steps;
-    private String tip;
-    private Set<Character> wrongLetters;
-    private Map<Character, Integer> correctLetters;
-    private WordleDictionary dictionary;
+    private static final int MAX_ATTEMPTS = 6;
+    private final String secretWord;
+    private int attemptsUsed;
+    private boolean gameOver;
+    private final WordleDictionary dictionary;
+    private final List<String> guesses;
+    private final List<String> feedback;
 
     public WordleGame(WordleDictionary dictionary) {
         this.dictionary = dictionary;
-        wrongLetters = new HashSet<>();
-        correctLetters = new HashMap<>();
+        attemptsUsed = 0;
+        gameOver = false;
+        secretWord = dictionary.getRandomWord();
+        this.guesses = new ArrayList<>();
+        this.feedback = new ArrayList<>();
     }
 
+    public String makeGuess(String word) {
+        if (gameOver) {
+            throw new IllegalStateException("Игра уже завершена");
+        }
+        word = dictionary.editWord(word);
+        if (dictionary.checkWord(word) && dictionary.contains(word)) {
+            increaseAttemptsUsed();
+            String tip = evaluateGuess(word);
+            guesses.add(word);
+            feedback.add(tip);
+            if (tip.equals("+++++") || attemptsUsed >= MAX_ATTEMPTS) {
+                setGameOver(true);
+            }
+            return tip;
+        } else {
+            throw new IllegalArgumentException("Недопустимое слово");
+        }
+    }
+
+    private String evaluateGuess(String word) {
+        int length = secretWord.length();
+        char[] tip = new char[length];
+        boolean[] secretUsed = new boolean[length];
+        for (int i = 0; i < length; i++) {
+            if (word.charAt(i) == secretWord.charAt(i)) {
+                tip[i] = '+';
+                secretUsed[i] = true;
+            }
+        }
+        for (int i = 0; i < length; i++) {
+            if (tip[i] == '+') {
+                continue;
+            }
+            char currentChar = word.charAt(i);
+            boolean found = false;
+            for (int j = 0; j < length; j++) {
+                if (!secretUsed[j] && secretWord.charAt(j) == currentChar) {
+                    tip[i] = '^';
+                    secretUsed[j] = true;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                tip[i] = '-';
+            }
+        }
+        return new String(tip);
+    }
+
+    public String getSecretWord() {
+        return secretWord;
+    }
+
+    public int getAttemptsUsed() {
+        return attemptsUsed;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public WordleDictionary getDictionary() {
+        return dictionary;
+    }
+
+    private void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
+
+    private void increaseAttemptsUsed() {
+        attemptsUsed++;
+    }
+
+    public List<String> getGuesses() {
+        return List.copyOf(guesses);
+    }
+
+    public List<String> getFeedback() {
+        return List.copyOf(feedback);
+    }
+}
+    /*
     public String getPlayerResponse() {
         return playerResponse;
     }
 
-    public int getSteps() {
-        return steps;
+    public int getAttemptsUsed() {
+        return attemptsUsed;
     }
 
     public WordleDictionary getDictionary() {
@@ -45,8 +131,8 @@ public class WordleGame {
 
     public void play() {
         System.out.println("Добро пожаловать в игру WORDLE");
-        answer = findRandomWord();
-        steps = 1;
+        secretWord = findRandomWord();
+        attemptsUsed = 1;
         Scanner scanner = new Scanner(System.in);
         while (true) {
             String hint;
@@ -65,17 +151,17 @@ public class WordleGame {
             } else if (!checkResponse(playerResponse)) {
                 System.out.println("Введен некорректный вариант ответа, в ответе должны быть только буквы.");
                 continue;
-            } else if (answer.equals(playerResponse)) {
+            } else if (secretWord.equals(playerResponse)) {
                 System.out.println("Поздравляем, вы победили!");
-                System.out.println("Было загадано слово: " + answer);
+                System.out.println("Было загадано слово: " + secretWord);
                 break;
-            } else if (steps == 6) {
+            } else if (attemptsUsed == 6) {
                 System.out.println("Увы! Количество ходов исчерпано, вы проиграли.");
-                System.out.println("Было загадано слово: " + answer);
+                System.out.println("Было загадано слово: " + secretWord);
                 break;
             }
-            System.out.println("Число оставшихся попыток: " + (6 - steps));
-            steps++;
+            System.out.println("Число оставшихся попыток: " + (6 - attemptsUsed));
+            attemptsUsed++;
             tip = makeTip();
             System.out.println("Совет: " + tip);
         }
@@ -129,11 +215,11 @@ public class WordleGame {
     private String makeTip() {
         StringBuilder tip = new StringBuilder();
         for (int i = 0; i < playerResponse.length(); i++) {
-            if (!answer.contains(Character.toString(playerResponse.charAt(i)))) {
+            if (!secretWord.contains(Character.toString(playerResponse.charAt(i)))) {
                 tip.append('-');
                 wrongLetters.add(playerResponse.charAt(i));
-            } else if (answer.contains(Character.toString(playerResponse.charAt(i))) &&
-                    playerResponse.charAt(i) != answer.charAt(i)) {
+            } else if (secretWord.contains(Character.toString(playerResponse.charAt(i))) &&
+                    playerResponse.charAt(i) != secretWord.charAt(i)) {
                 tip.append('^');
                 correctLetters.put(playerResponse.charAt(i), i * -1);
             } else {
@@ -149,4 +235,5 @@ public class WordleGame {
         dictionary.getWords().remove(randomWord);
         return randomWord;
     }
-}
+    */
+
