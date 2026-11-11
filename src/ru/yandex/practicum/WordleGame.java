@@ -5,7 +5,7 @@ import java.util.*;
 
 public class WordleGame {
 
-    private static final int MAX_ATTEMPTS = 6;
+    public static final int MAX_ATTEMPTS = 6;
     private final String secretWord;
     private int attemptsUsed;
     private boolean gameOver;

@@ -18,11 +18,12 @@ public class Wordle {
                     wordleGame = new WordleGame(new WordleDictionaryLoader(logWriter).load(dictionaryPath), logWriter);
                 } catch (WordleDictionaryException e) {
                     System.out.println("Ошибка загрузки словаря");
-                    logWriter.println("Ошибка загрузки словаря: " + e.g)etMessage());
+                    logWriter.println("Ошибка загрузки словаря: " + e.getMessage());
                     e.printStackTrace(logWriter);
                     return;
                 }
                 while (!wordleGame.isGameOver()) {
+                    System.out.println("Количество оставшихся попыток: " + (WordleGame.MAX_ATTEMPTS - wordleGame.getAttemptsUsed()));
                     System.out.println("Введите ваш вариант ответа");
                     String userInput = scanner.nextLine();
 
@@ -36,7 +37,9 @@ public class Wordle {
                     System.out.println("Введен ответ: " + userInput);
                     try {
                         String tip = wordleGame.makeGuess(userInput);
+
                         System.out.println(tip);
+
                         if (wordleGame.isGameOver()) {
                             if (tip.equals("+++++")) {
                                 System.out.println("Поздравляю, вы победили!");
@@ -45,6 +48,7 @@ public class Wordle {
                                 System.out.println("Было загадано слово " + wordleGame.getSecretWord());
                             }
                         }
+
                     } catch (WordleGameException e) {
                         System.out.println(e.getMessage());
                     }
