@@ -3,19 +3,6 @@ package ru.yandex.practicum;
 import java.io.PrintWriter;
 import java.util.*;
 
-/*
-в этом классе хранится словарь и состояние игры
-    текущий шаг
-    всё что пользователь вводил
-    правильный ответ
-
-в этом классе нужны методы, которые
-    проанализируют совпадение слова с ответом
-    предложат слово-подсказку с учётом всего, что вводил пользователь ранее
-
-не забудьте про специальные типы исключений для игровых и неигровых ошибок
- */
-
 public class WordleGame {
 
     private static final int MAX_ATTEMPTS = 6;
@@ -46,10 +33,17 @@ public class WordleGame {
         if (dictionary.checkWord(word) && dictionary.contains(word)) {
             increaseAttemptsUsed();
             String tip = evaluateGuess(secretWord, word);
+            logWriter.println("Попытка: " + word + ", результат: " + tip);
+            logWriter.println("Использовано попыток: " + attemptsUsed + " из " + MAX_ATTEMPTS);
             guesses.add(word);
             feedback.add(tip);
             if (tip.equals("+++++") || attemptsUsed >= MAX_ATTEMPTS) {
                 setGameOver(true);
+                if(tip.equals("+++++")){
+                    logWriter.println("Игра завершилась победой");
+                } else {
+                    logWriter.println("Игра завершилась поражением");
+                }
             }
             return tip;
         } else {
@@ -103,9 +97,11 @@ public class WordleGame {
                 }
             }
             if (valid) {
+                logWriter.println("Компьютер предложил слово: " + candidate);
                 return candidate;
             }
         }
+        logWriter.println("Подходящие слова не найдены в словаре");
         return null;
     }
 

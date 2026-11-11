@@ -17,7 +17,7 @@ public class WordleDictionary {
         if (this.words.isEmpty()) {
             throw new WordleDictionaryException("В словаре нет подходящих слов");
         }
-        logWriter.println("ССоздание игрового словаря завершено, подходящих слов: " + this.words.size());
+        logWriter.println("Создание игрового словаря завершено, подходящих слов: " + this.words.size());
     }
 
     private final List<String> words;
