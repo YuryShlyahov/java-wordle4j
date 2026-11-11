@@ -1,5 +1,6 @@
 package ru.yandex.practicum;
 
+import java.io.PrintWriter;
 import java.util.*;
 
 /*
@@ -24,14 +25,17 @@ public class WordleGame {
     private final WordleDictionary dictionary;
     private final List<String> guesses;
     private final List<String> feedback;
+    private final PrintWriter logWriter;
 
-    public WordleGame(WordleDictionary dictionary) {
+    public WordleGame(WordleDictionary dictionary, PrintWriter logWriter) {
+        this.logWriter = logWriter;
         this.dictionary = dictionary;
         attemptsUsed = 0;
         gameOver = false;
         secretWord = dictionary.getRandomWord();
         this.guesses = new ArrayList<>();
         this.feedback = new ArrayList<>();
+        logWriter.println("Игра начата");
     }
 
     public String makeGuess(String word) {
@@ -137,124 +141,3 @@ public class WordleGame {
         return List.copyOf(feedback);
     }
 }
-    /*
-    public String getPlayerResponse() {
-        return playerResponse;
-    }
-
-    public int getAttemptsUsed() {
-        return attemptsUsed;
-    }
-
-    public WordleDictionary getDictionary() {
-        return dictionary;
-    }
-
-    public void play() {
-        System.out.println("Добро пожаловать в игру WORDLE");
-        secretWord = findRandomWord();
-        attemptsUsed = 1;
-        Scanner scanner = new Scanner(System.in);
-        while (true) {
-            String hint;
-            System.out.println("Введите ответ.");
-            playerResponse = scanner.nextLine().toLowerCase();
-            if (playerResponse.isEmpty()) {
-                hint = makeHint();
-                System.out.println("Подсказка: " + hint);
-                playerResponse = hint;
-                continue;
-            }
-
-            if (playerResponse.length() != 5) {
-                System.out.println("Введен некорректный вариант ответа, в ответе должно быть 5 букв.");
-                continue;
-            } else if (!checkResponse(playerResponse)) {
-                System.out.println("Введен некорректный вариант ответа, в ответе должны быть только буквы.");
-                continue;
-            } else if (secretWord.equals(playerResponse)) {
-                System.out.println("Поздравляем, вы победили!");
-                System.out.println("Было загадано слово: " + secretWord);
-                break;
-            } else if (attemptsUsed == 6) {
-                System.out.println("Увы! Количество ходов исчерпано, вы проиграли.");
-                System.out.println("Было загадано слово: " + secretWord);
-                break;
-            }
-            System.out.println("Число оставшихся попыток: " + (6 - attemptsUsed));
-            attemptsUsed++;
-            tip = makeTip();
-            System.out.println("Совет: " + tip);
-        }
-
-    }
-
-
-    private boolean checkResponse(String playerResponse) {
-        for (Character character : playerResponse.toCharArray()) {
-            if (!Character.isLetter(character)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public String makeHint() {
-        if (correctLetters.isEmpty()) {
-            return findRandomWord();
-        }
-
-        for (String word : dictionary.getWords()) {
-            if (checkWord(word)) {
-                return word;
-            }
-        }
-        return "hint";
-    }
-
-    private boolean checkWord(String word) {
-        for (int i = 0; i < word.length(); i++) {
-            if (wrongLetters.contains(word.charAt(i))) {
-                System.out.println("Проверяем слово " + word);
-                System.out.println("Буквы " + word.charAt(i) + " нет в слове");
-                return false;
-            }
-        }
-        for (Map.Entry<Character, Integer> entry : correctLetters.entrySet()) {
-            if (word.indexOf(entry.getKey()) < 0) {
-                return false;
-            } else if (entry.getValue() >= 0 && word.charAt(entry.getValue()) != entry.getKey()) {
-                return false;
-            } else if (entry.getValue() < 0 && word.indexOf(entry.getValue()) == entry.getValue() * -1) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-
-    private String makeTip() {
-        StringBuilder tip = new StringBuilder();
-        for (int i = 0; i < playerResponse.length(); i++) {
-            if (!secretWord.contains(Character.toString(playerResponse.charAt(i)))) {
-                tip.append('-');
-                wrongLetters.add(playerResponse.charAt(i));
-            } else if (secretWord.contains(Character.toString(playerResponse.charAt(i))) &&
-                    playerResponse.charAt(i) != secretWord.charAt(i)) {
-                tip.append('^');
-                correctLetters.put(playerResponse.charAt(i), i * -1);
-            } else {
-                tip.append('+');
-                correctLetters.put(playerResponse.charAt(i), i);
-            }
-        }
-        return tip.toString();
-    }
-
-    public String findRandomWord() {
-        String randomWord = getDictionary().getWords().get(new Random().nextInt(getDictionary().getWords().size()));
-        dictionary.getWords().remove(randomWord);
-        return randomWord;
-    }
-    */
-

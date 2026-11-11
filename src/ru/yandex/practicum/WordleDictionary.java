@@ -1,23 +1,23 @@
 package ru.yandex.practicum;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/*
-этот класс содержит в себе список слов List<String>
-    его методы похожи на методы списка, но учитывают особенности игры
-    также этот класс может содержать рутинные функции по сравнению слов, букв и т.д.
- */
+
 public class WordleDictionary {
-    public WordleDictionary(List<String> words) {
+    private final PrintWriter logWriter;
+    public WordleDictionary(List<String> words, PrintWriter logWriter) {
         this.words = new ArrayList<>();
+        this.logWriter = logWriter;
         for (String word : words) {
             add(word);
         }
         if (this.words.isEmpty()) {
             throw new WordleDictionaryException("В словаре нет подходящих слов");
         }
+        logWriter.println("ССоздание игрового словаря завершено, подходящих слов: " + this.words.size());
     }
 
     private final List<String> words;
