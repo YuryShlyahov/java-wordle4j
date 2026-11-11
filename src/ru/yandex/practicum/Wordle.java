@@ -1,6 +1,7 @@
 package ru.yandex.practicum;
 
 import java.io.IOException;
+import java.util.Scanner;
 
 /*
 в главном классе нам нужно:
@@ -15,7 +16,35 @@ public class Wordle {
 
     public static void main(String[] args) throws IOException {
         WordleGame wordleGame = new WordleGame(new WordleDictionaryLoader().load());
-        wordleGame.play();
+        Scanner scanner = new Scanner(System.in);
+        while (!wordleGame.isGameOver()) {
+            String userInput = scanner.nextLine();
+
+            if (userInput.isBlank()) {
+                userInput = wordleGame.suggestWord();
+            }
+            if (userInput == null) {
+                System.out.println("Подходящих слов не найдено");
+                break;
+            }
+            System.out.println("Введен ответ: " + userInput);
+            try {
+                String tip = wordleGame.makeGuess(userInput);
+                System.out.println(tip);
+                if (wordleGame.isGameOver()) {
+                    if (tip.equals("+++++")) {
+                        System.out.println("Поздравляю, вы победили!");
+                    } else {
+                        System.out.println("Увы, вы проиграли!");
+                        System.out.println("Было загадано слово " + wordleGame.getSecretWord());
+                    }
+                }
+            } catch (WordleGameException e) {
+                System.out.println(e.getMessage());
+            }
+
+        }
+
     }
 
 }

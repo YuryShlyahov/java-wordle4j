@@ -36,12 +36,12 @@ public class WordleGame {
 
     public String makeGuess(String word) {
         if (gameOver) {
-            throw new IllegalStateException("Игра уже завершена");
+            throw new WordleGameException("Игра уже завершена");
         }
         word = dictionary.editWord(word);
         if (dictionary.checkWord(word) && dictionary.contains(word)) {
             increaseAttemptsUsed();
-            String tip = evaluateGuess(word);
+            String tip = evaluateGuess(secretWord, word);
             guesses.add(word);
             feedback.add(tip);
             if (tip.equals("+++++") || attemptsUsed >= MAX_ATTEMPTS) {
@@ -49,16 +49,16 @@ public class WordleGame {
             }
             return tip;
         } else {
-            throw new IllegalArgumentException("Недопустимое слово");
+            throw new WordleGameException("Недопустимое слово");
         }
     }
 
-    private String evaluateGuess(String word) {
-        int length = secretWord.length();
+    private String evaluateGuess(String secret, String word) {
+        int length = secret.length();
         char[] tip = new char[length];
         boolean[] secretUsed = new boolean[length];
         for (int i = 0; i < length; i++) {
-            if (word.charAt(i) == secretWord.charAt(i)) {
+            if (word.charAt(i) == secret.charAt(i)) {
                 tip[i] = '+';
                 secretUsed[i] = true;
             }
@@ -70,7 +70,7 @@ public class WordleGame {
             char currentChar = word.charAt(i);
             boolean found = false;
             for (int j = 0; j < length; j++) {
-                if (!secretUsed[j] && secretWord.charAt(j) == currentChar) {
+                if (!secretUsed[j] && secret.charAt(j) == currentChar) {
                     tip[i] = '^';
                     secretUsed[j] = true;
                     found = true;
@@ -82,6 +82,27 @@ public class WordleGame {
             }
         }
         return new String(tip);
+    }
+
+    public String suggestWord() {
+        for (String candidate : dictionary.getWords()) {
+            boolean valid = true;
+            if (guesses.contains(candidate)) {
+                continue;
+            }
+            for (int i = 0; i < guesses.size(); i++) {
+                String previousGuess = guesses.get(i);
+                String previousTip = feedback.get(i);
+                if (!evaluateGuess(candidate, previousGuess).equals(previousTip)) {
+                    valid = false;
+                    break;
+                }
+            }
+            if (valid) {
+                return candidate;
+            }
+        }
+        return null;
     }
 
     public String getSecretWord() {

@@ -10,13 +10,13 @@ import java.util.Random;
     также этот класс может содержать рутинные функции по сравнению слов, букв и т.д.
  */
 public class WordleDictionary {
-    public WordleDictionary(List<String> words) throws IllegalStateException {
+    public WordleDictionary(List<String> words) {
         this.words = new ArrayList<>();
         for (String word : words) {
             add(word);
         }
         if (this.words.isEmpty()) {
-            throw new IllegalStateException("В словаре нет подходящих слов");
+            throw new WordleDictionaryException("В словаре нет подходящих слов");
         }
     }
 
