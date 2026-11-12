@@ -9,13 +9,15 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class WordleGameTest {
     WordleGame newGame;
+    PrintWriter printWriter;
 
     @BeforeEach
     public void setUp() {
-        PrintWriter printWriter = new PrintWriter(System.out);
+        printWriter = new PrintWriter(System.out);
         newGame = new WordleGame(new WordleDictionary(List.of("кошка"), printWriter), printWriter);
     }
 
@@ -59,7 +61,35 @@ public class WordleGameTest {
         );
     }
     @Test
-    public void shouldNormalizeGuessBeforeValidation() {}
+    public void shouldNormalizeGuessBeforeValidation() {
+        String test = " ЁЖиКи  ";
+        newGame = new WordleGame(new WordleDictionary(List.of("ёжики"), printWriter), printWriter);
+        assertEquals("+++++", newGame.makeGuess(test));
+    }
     @Test
-    public void shouldStoreGuessAndFeedback() {}
+    public void shouldStoreGuessAndFeedback() {
+        newGame.makeGuess("кошка");
+        List <String> feedBackTestList = List.of("+++++");
+        List <String> guessesTestList = List.of("кошка");
+        assertEquals(feedBackTestList, newGame.getFeedback());
+        assertEquals(guessesTestList, newGame.getGuesses());
+    }
+
+    @Test
+    public void shouldMarkCorrectLettersWithPlus() {
+        assertEquals();newGame = new WordleGame(new WordleDictionary(List.of("топор"), printWriter), printWriter);
+
+    }
+    @Test
+    public void shouldMarkMisplacedLettersWithCaret(){
+
+    }
+    @Test
+    public void shouldMarkAbsentLettersWithMinus() {
+
+    }
+    @Test
+    public void shouldHandleRepeatedLettersCorrectly() {
+
+    }
 }
