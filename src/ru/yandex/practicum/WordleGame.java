@@ -6,7 +6,7 @@ import java.util.*;
 public class WordleGame {
 
     public static final int MAX_ATTEMPTS = 6;
-    private String secretWord;
+    private final String secretWord;
     private int attemptsUsed;
     private boolean gameOver;
     private final WordleDictionary dictionary;
@@ -20,6 +20,16 @@ public class WordleGame {
         attemptsUsed = 0;
         gameOver = false;
         secretWord = dictionary.getRandomWord();
+        this.guesses = new ArrayList<>();
+        this.feedback = new ArrayList<>();
+        logWriter.println("Игра начата");
+    }
+    public WordleGame(WordleDictionary dictionary, PrintWriter logWriter, String secretWord) {
+        this.logWriter = logWriter;
+        this.dictionary = dictionary;
+        attemptsUsed = 0;
+        gameOver = false;
+        this.secretWord = dictionary.editWord(secretWord);
         this.guesses = new ArrayList<>();
         this.feedback = new ArrayList<>();
         logWriter.println("Игра начата");
@@ -137,7 +147,5 @@ public class WordleGame {
         return List.copyOf(feedback);
     }
 
-    public void setSecretWord(String secretWord) {
-        this.secretWord = secretWord;
-    }
+
 }
