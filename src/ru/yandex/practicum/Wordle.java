@@ -1,5 +1,8 @@
 package ru.yandex.practicum;
 
+import ru.yandex.practicum.exceptions.WordleDictionaryException;
+import ru.yandex.practicum.exceptions.WordleGameException;
+
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Scanner;

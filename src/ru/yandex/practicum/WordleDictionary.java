@@ -1,5 +1,7 @@
 package ru.yandex.practicum;
 
+import ru.yandex.practicum.exceptions.WordleDictionaryException;
+
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +10,11 @@ import java.util.Random;
 
 public class WordleDictionary {
     private final PrintWriter logWriter;
+    private Random random;
+    private final List<String> words;
+
     public WordleDictionary(List<String> words, PrintWriter logWriter) {
+        random = new Random();
         this.words = new ArrayList<>();
         this.logWriter = logWriter;
         for (String word : words) {
@@ -20,14 +26,14 @@ public class WordleDictionary {
         logWriter.println("Создание игрового словаря завершено, подходящих слов: " + this.words.size());
     }
 
-    private final List<String> words;
+
 
     public List<String> getWords() {
         return List.copyOf(words);
     }
 
     public String getRandomWord() {
-        return words.get(new Random().nextInt(words.size()));
+        return words.get(random.nextInt(words.size()));
     }
 
     public boolean contains(String word) {

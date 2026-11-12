@@ -1,5 +1,7 @@
 package ru.yandex.practicum;
 
+import ru.yandex.practicum.exceptions.WordleDictionaryException;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;

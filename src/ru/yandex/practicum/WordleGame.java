@@ -1,5 +1,7 @@
 package ru.yandex.practicum;
 
+import ru.yandex.practicum.exceptions.WordleGameException;
+
 import java.io.PrintWriter;
 import java.util.*;
 
@@ -24,7 +26,8 @@ public class WordleGame {
         this.feedback = new ArrayList<>();
         logWriter.println("Игра начата");
     }
-    public WordleGame(WordleDictionary dictionary, PrintWriter logWriter, String secretWord) {
+
+    private WordleGame(WordleDictionary dictionary, PrintWriter logWriter, String secretWord) {
         this.logWriter = logWriter;
         this.dictionary = dictionary;
         attemptsUsed = 0;
@@ -33,6 +36,14 @@ public class WordleGame {
         this.guesses = new ArrayList<>();
         this.feedback = new ArrayList<>();
         logWriter.println("Игра начата");
+    }
+
+    public static WordleGame withSecretWord(
+            WordleDictionary dictionary,
+            PrintWriter logWriter,
+            String secretWord) {
+
+        return new WordleGame(dictionary, logWriter, secretWord);
     }
 
     public String makeGuess(String word) {
@@ -49,7 +60,7 @@ public class WordleGame {
             feedback.add(tip);
             if (tip.equals("+++++") || attemptsUsed >= MAX_ATTEMPTS) {
                 setGameOver(true);
-                if(tip.equals("+++++")){
+                if (tip.equals("+++++")) {
                     logWriter.println("Игра завершилась победой");
                 } else {
                     logWriter.println("Игра завершилась поражением");
@@ -127,9 +138,6 @@ public class WordleGame {
         return gameOver;
     }
 
-    public WordleDictionary getDictionary() {
-        return dictionary;
-    }
 
     private void setGameOver(boolean gameOver) {
         this.gameOver = gameOver;
