@@ -1,10 +1,9 @@
 package ru.yandex.practicum;
 
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.exceptions.WordleDictionaryException;
 
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;

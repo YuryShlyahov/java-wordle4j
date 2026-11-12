@@ -2,6 +2,7 @@ package ru.yandex.practicum;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.exceptions.WordleGameException;
 
 import java.io.PrintWriter;
 import java.util.List;
@@ -82,19 +83,19 @@ public class WordleGameTest {
 
     @Test
     public void shouldMarkMisplacedLettersWithCaret() {
-        newGame = new WordleGame(new WordleDictionary(List.of("драка", "карат"), printWriter), printWriter, "карат");
+        newGame = WordleGame.withSecretWord(new WordleDictionary(List.of("драка", "карат"), printWriter), printWriter, "карат");
         assertEquals("-^^^^", newGame.makeGuess("драка"));
     }
 
     @Test
     public void shouldMarkAbsentLettersWithMinus() {
-        newGame = new WordleGame(new WordleDictionary(List.of("аббат", "рывок"), printWriter), printWriter, "рывок");
+        newGame = WordleGame.withSecretWord(new WordleDictionary(List.of("аббат", "рывок"), printWriter), printWriter, "рывок");
         assertEquals("-----", newGame.makeGuess("аббат"));
     }
 
     @Test
     public void shouldHandleRepeatedLettersCorrectly() {
-        newGame = new WordleGame(new WordleDictionary(List.of("аббат", "батон"), printWriter), printWriter, "батон");
+        newGame = WordleGame.withSecretWord(new WordleDictionary(List.of("аббат", "батон"), printWriter), printWriter, "батон");
         assertEquals("^^--^", newGame.makeGuess("аббат"));
     }
 
@@ -107,7 +108,7 @@ public class WordleGameTest {
 
     @Test
     public void shouldFinishGameAfterSixIncorrectGuesses() {
-        newGame = new WordleGame(new WordleDictionary(List.of("аббат", "батон", "бурка", "топор", "вилка", "ложка", "ячата"), printWriter), printWriter, "батон");
+        newGame = WordleGame.withSecretWord(new WordleDictionary(List.of("аббат", "батон", "бурка", "топор", "вилка", "ложка", "ячата"), printWriter), printWriter, "батон");
         assertFalse(newGame.isGameOver());
         newGame.makeGuess("аббат");
         newGame.makeGuess("бурка");
@@ -120,7 +121,7 @@ public class WordleGameTest {
 
     @Test
     public void shouldRejectGuessAfterGameIsFinished() {
-        newGame = new WordleGame(new WordleDictionary(List.of("аббат", "батон", "бурка", "топор", "вилка", "ложка", "ячата", "ропот"), printWriter), printWriter, "батон");
+        newGame = WordleGame.withSecretWord(new WordleDictionary(List.of("аббат", "батон", "бурка", "топор", "вилка", "ложка", "ячата", "ропот"), printWriter), printWriter, "батон");
         assertFalse(newGame.isGameOver());
         newGame.makeGuess("аббат");
         newGame.makeGuess("бурка");
@@ -141,14 +142,14 @@ public class WordleGameTest {
 
     @Test
     public void shouldNotSuggestPreviouslyGuessedWord() {
-        newGame = new WordleGame(new WordleDictionary(List.of( "кошка"), printWriter), printWriter, "аббат");
+        newGame = WordleGame.withSecretWord(new WordleDictionary(List.of( "кошка"), printWriter), printWriter, "аббат");
         newGame.makeGuess("кошка");
         assertNull(newGame.suggestWord());
     }
 
     @Test
     public void shouldReturnNullWhenNoCandidatesRemain() {
-        newGame = new WordleGame(new WordleDictionary(List.of("аббат", "кошка"), printWriter), printWriter, "кошки");
+        newGame = WordleGame.withSecretWord(new WordleDictionary(List.of("аббат", "кошка"), printWriter), printWriter, "кошки");
         newGame.makeGuess("кошка");
         assertNull(newGame.suggestWord());
     }
