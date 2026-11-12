@@ -42,6 +42,7 @@ public class Wordle {
 
                         if (wordleGame.isGameOver()) {
                             if (tip.equals("+++++")) {
+                                System.out.println("Было загадано слово: " + wordleGame.getSecretWord());
                                 System.out.println("Поздравляю, вы победили!");
                             } else {
                                 System.out.println("Увы, вы проиграли!");
